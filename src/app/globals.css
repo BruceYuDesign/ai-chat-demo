@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+
+body {
+  @apply font-mono;
+}
+
+
+@layer utilities {
+  /* 區塊樣式 */
+  .util-block {
+    @apply bg-slate-50 border-2 border-slate-300 rounded-3xl;
+  }
+
+  /* AI回答訊息 */
+  .util-assistant-content {
+    @apply text-slate-600 break-all whitespace-pre-wrap;
+  }
+  .util-assistant-content h1,
+  .util-assistant-content h2,
+  .util-assistant-content h3,
+  .util-assistant-content h4,
+  .util-assistant-content h5,
+  .util-assistant-content h6 {
+    @apply font-bold;
+  }
+  .util-assistant-content h1 {
+    @apply text-4xl;
+  }
+  .util-assistant-content h2 {
+    @apply text-3xl;
+  }
+  .util-assistant-content h3 {
+    @apply text-2xl;
+  }
+  .util-assistant-content h4 {
+    @apply text-xl;
+  }
+  .util-assistant-content h5 {
+    @apply text-lg;
+  }
+  .util-assistant-content h6 {
+    @apply text-base;
+  }
+  .util-assistant-content p {
+    @apply leading-loose;
+  }
+  .util-assistant-content code:not(pre code) {
+    @apply px-1 py-0.5 bg-slate-100 border-2 border-slate-200 rounded-md;
+  }
+  .util-assistant-content pre {
+    @apply px-4 py-2 bg-slate-200 rounded-lg overflow-auto;
+  }
+}
