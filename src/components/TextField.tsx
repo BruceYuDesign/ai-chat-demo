@@ -27,8 +27,6 @@ interface TextFieldProps {
  * - 可判斷中文是否選字
  * - 支援 Shift + Enter 換行且攔截回調函式
  * - 可於父層組件控制送出按鈕是否可點選
- * 
- * TODO 修正：按下 Enter 發送時，<textarea> 會多一個換行
  */
 export default function TextField(props: TextFieldProps) {
   // 輸入框文字
@@ -52,6 +50,7 @@ export default function TextField(props: TextFieldProps) {
       shiftIsPressing.current = true;
     }
     if (event.key === 'Enter' && !shiftIsPressing.current && !isComposing.current) {
+      event.preventDefault(); // 預防多發送一個換行
       onSubmit();
     }
   }
