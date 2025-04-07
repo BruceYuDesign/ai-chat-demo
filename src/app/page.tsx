@@ -1,7 +1,7 @@
 'use client';
 import type { ChatCompletion } from 'openai/src/resources.js';
 import type { Conversation, DialogRef } from '@/components/Dialog';
-import { useRef, useState, useEffect, use } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { axiosHandler } from '@/utils/axiosHandler';
 import Dialog from '@/components/Dialog';
 import TextField from '@/components/TextField';
@@ -36,12 +36,14 @@ export default function Home() {
     });
 
     // 新增 AI 發送的訊息
-    result && setConversation(prevConversation => {
-      return [
-        ...prevConversation,
-        { content: result.choices[0].message.content as string, role: 'assistant' },
-      ];
-    });
+    if (result) {
+      setConversation(prevConversation => {
+        return [
+          ...prevConversation,
+          { content: result.choices[0].message.content as string, role: 'assistant' },
+        ];
+      });
+    }
 
     setIsLoading(false);
   }

@@ -89,4 +89,7 @@ const Dialog = forwardRef<DialogRef, DialogProps>((props, ref) => {
 });
 
 
+Dialog.displayName = 'Dialog';
+
+
 export default Dialog;
