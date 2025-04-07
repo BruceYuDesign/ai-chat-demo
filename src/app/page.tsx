@@ -1,7 +1,7 @@
 'use client';
 import type { ChatCompletion } from 'openai/src/resources.js';
-import type { Conversation } from '@/components/Dialog';
-import { useState } from 'react';
+import type { Conversation, DialogRef } from '@/components/Dialog';
+import { useRef, useState, useEffect, use } from 'react';
 import { axiosHandler } from '@/utils/axiosHandler';
 import Dialog from '@/components/Dialog';
 import TextField from '@/components/TextField';
@@ -16,6 +16,8 @@ export default function Home() {
   const [conversation, setConversation] = useState<Conversation>([]);
   // 是否讀取中
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  // 對話框
+  const dialogRef = useRef<DialogRef>(null);
 
 
   // 送出對話訊息，含 browser 歷史訊息
@@ -33,14 +35,12 @@ export default function Home() {
       },
     });
 
-    // 新增 AI 發送的訊息，替換掉 Loading...
-    setConversation(prevConversation => {
-      return result
-        ? [
-          ...prevConversation.slice(0, -1),
-          { content: result.choices[0].message.content as string, role: 'assistant' },
-        ]
-        : prevConversation.slice(0, -1);
+    // 新增 AI 發送的訊息
+    result && setConversation(prevConversation => {
+      return [
+        ...prevConversation,
+        { content: result.choices[0].message.content as string, role: 'assistant' },
+      ];
     });
 
     setIsLoading(false);
@@ -55,7 +55,6 @@ export default function Home() {
     setConversation(prevConversation => [
       ...prevConversation,
       { content, role: 'user' },
-      { content: 'Loading...', role: 'assistant' },
     ]);
 
     // 送出訊息給 AI
@@ -63,9 +62,19 @@ export default function Home() {
   }
 
 
+  // 使用者發送訊息，滾動到最底部
+  useEffect(() => {
+    if (conversation.at(-1)?.role === 'user') {
+      dialogRef.current?.scrollToBottom();
+    }
+  }, [conversation]);
+
+
   return (
     <div className='w-screen h-screen flex flex-col gap-4 px-16 py-8 items-stretch justify-stretch bg-slate-200'>
       <Dialog
+        ref={dialogRef}
+        isLoading={isLoading}
         conversation={conversation}
       />
       <TextField
