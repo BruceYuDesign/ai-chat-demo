@@ -1,5 +1,6 @@
-import type { Method } from 'axios';
+import type { Method } from 'axios'
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 
 /**
@@ -17,6 +18,16 @@ interface AxiosHandlerOptions {
 }
 
 
+/**
+ * @interface AxiosError
+ * @param {number} status - 錯誤狀態碼
+ */
+interface AxiosError {
+  status: number;
+  [key: string]: unknown;
+}
+
+
 const instance = axios.create({
   baseURL: '/api',
   timeout: 1000 * 60,
@@ -24,6 +35,34 @@ const instance = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
+
+const errorCodeDict: Record<number, string> = {
+  400: '請求錯誤',
+  401: '未授權',
+  402: '需要付款',
+  403: '禁止訪問',
+  404: '請求的資源不存在',
+  405: '請求方法不被允許',
+  406: '請求的格式不正確',
+  429: '已超過請求限制',
+  500: '伺服器錯誤',
+}
+
+
+/**
+ * @function isAxiosError
+ * @description 檢查 error 是否為 AxiosError 類型
+ * @param {unknown} error - 發生的錯誤
+ * @returns {boolean} - 是否為 AxiosError
+ */
+function isAxiosError(error: unknown): error is AxiosError {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    typeof (error as AxiosError).status === 'number'
+  );
+}
 
 
 /**
@@ -43,5 +82,10 @@ export async function axiosHandler(options: AxiosHandlerOptions) {
     return responseData;
   } catch (error) {
     console.error(error);
+    if (isAxiosError(error) && errorCodeDict[error.status]) {
+      toast.error(errorCodeDict[error.status]);
+    } else {
+      toast.error('發生未知錯誤');
+    }
   }
 }

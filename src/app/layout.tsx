@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ToastContainer } from 'react-toastify';
 import '@/app/globals.css';
 
 
@@ -27,6 +28,9 @@ export default function RootLayout(props: RootLayoutProps) {
     <html lang='zh-Hant-TW'>
       <body cz-shortcut-listen='true'>
         {props.children}
+        <ToastContainer
+          position='top-left'
+        />
       </body>
     </html>
   );

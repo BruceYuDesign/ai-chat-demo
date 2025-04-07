@@ -1,10 +1,10 @@
 {
   "name": "ai-chat-demo",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "npx tsx bin/generateData.ts && next build",
     "start": "next start",
     "lint": "next lint",
     "generate-data": "npx tsx bin/generateData.ts"
@@ -18,7 +18,8 @@
     "openai": "^4.91.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-markdown": "^10.1.0"
+    "react-markdown": "^10.1.0",
+    "react-toastify": "^11.0.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
