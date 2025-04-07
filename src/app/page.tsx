@@ -22,7 +22,7 @@ export default function Home() {
   const createDialog = async (content: string) => {
     setIsLoading(true);
 
-    const result: ChatCompletion = await axiosHandler({
+    const result: ChatCompletion | null = await axiosHandler({
       url: '/dialog',
       method: 'POST',
       data: {
@@ -35,10 +35,12 @@ export default function Home() {
 
     // 新增 AI 發送的訊息，替換掉 Loading...
     setConversation(prevConversation => {
-      return [
-        ...prevConversation.slice(0, -1),
-        { content: result.choices[0].message.content as string, role: 'assistant' },
-      ];
+      return result
+        ? [
+          ...prevConversation.slice(0, -1),
+          { content: result.choices[0].message.content as string, role: 'assistant' },
+        ]
+        : prevConversation.slice(0, -1);
     });
 
     setIsLoading(false);

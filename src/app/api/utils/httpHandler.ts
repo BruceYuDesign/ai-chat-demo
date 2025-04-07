@@ -46,10 +46,30 @@ export const responseStatus = {
     status: 406,
     statusText: 'Not Acceptable',
   },
+  TOO_MANY_REQUESTS: {
+    status: 429,
+    statusText: 'Too Many Requests',
+  },
   INTERNAL_SERVER_ERROR: {
     status: 500,
     statusText: 'Internal Server Error',
   },
+}
+
+
+/**
+ * @function isHttpError
+ * @description 判斷錯誤是否為 HTTP 錯誤
+ * @param {unknown} error - 要檢查的錯誤物件
+ * @returns {boolean} - 是否為 HTTP 錯誤
+ */
+function isHttpError(error: unknown): error is { status: number; message?: string; statusText?: string } {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'status' in error &&
+    typeof error.status === 'number'
+  );
 }
 
 
@@ -69,6 +89,14 @@ export async function requestHandler(requestAction: () => Promise<Response>): Pr
     return await requestAction();
   } catch (error) {
     console.error(error);
+
+    if (isHttpError(error)) {
+      return responseHandler({
+        status: error.status,
+        statusText: error.message || error.statusText || 'Unknown Error',
+      });
+    }
+
     return responseHandler(responseStatus.INTERNAL_SERVER_ERROR);
   }
 }
